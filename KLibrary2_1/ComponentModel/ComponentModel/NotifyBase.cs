@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComponentModel
+namespace KLibrary.ComponentModel
 {
-    public class Class1
+    class NotifyBase
     {
     }
 }
