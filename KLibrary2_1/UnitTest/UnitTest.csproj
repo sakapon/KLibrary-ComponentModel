@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ComponentModel\DisposableBaseTest.cs" />
+    <Compile Include="ComponentModel\NotifyBaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
