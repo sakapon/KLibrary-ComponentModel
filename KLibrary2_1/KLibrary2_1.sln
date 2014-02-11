@@ -3,6 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentModel", "ComponentModel\ComponentModel.csproj", "{52745B27-1849-4DF7-B60F-BA66D52725C4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{A5A20038-93D6-4ED9-A179-E89B6FDAFB33}"
+	ProjectSection(SolutionItems) = preProject
+		Properties\KLibrary.snk = Properties\KLibrary.snk
+		Properties\KRules.ruleset = Properties\KRules.ruleset
+		Properties\SharedAssemblyInfo.cs = Properties\SharedAssemblyInfo.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
