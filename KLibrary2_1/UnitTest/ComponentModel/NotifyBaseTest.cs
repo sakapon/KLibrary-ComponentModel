@@ -11,44 +11,57 @@ namespace UnitTest.ComponentModel
         public void Person_1()
         {
             var idNotifiedCount = 0;
-            var nameNotifiedCount = 0;
+            var firstNameNotifiedCount = 0;
+            var lastNameNotifiedCount = 0;
+            var fullNameNotifiedCount = 0;
             var birthdayNotifiedCount = 0;
 
-            var now = DateTime.Now;
-            var now2 = DateTime.Now.AddSeconds(1);
+            var now1 = DateTime.Now;
+            var now2 = now1.AddSeconds(1);
 
             var target = new Person
             {
                 Id = 1,
-                Name = "Taro",
-                Birthday = now,
+                FirstName = "Ichiro",
+                LastName = "Tokyo",
+                Birthday = now1,
             };
             target.AddPropertyChangedHandler("Id", () => { idNotifiedCount++; });
-            target.AddPropertyChangedHandler("Name", () => { nameNotifiedCount++; });
+            target.AddPropertyChangedHandler("FirstName", () => { firstNameNotifiedCount++; });
+            target.AddPropertyChangedHandler("LastName", () => { lastNameNotifiedCount++; });
+            target.AddPropertyChangedHandler("FullName", () => { fullNameNotifiedCount++; });
             target.AddPropertyChangedHandler("Birthday", () => { birthdayNotifiedCount++; });
 
+            target.Id = 1;
+            target.FirstName = "Ichiro";
+            target.LastName = "Tokyo";
+            target.Birthday = now1;
+
             Assert.AreEqual(1, target.Id);
-            Assert.AreEqual("Taro", target.Name);
-            Assert.AreEqual(now, target.Birthday);
+            Assert.AreEqual("Ichiro", target.FirstName);
+            Assert.AreEqual("Tokyo", target.LastName);
+            Assert.AreEqual("Ichiro Tokyo", target.FullName);
+            Assert.AreEqual(now1, target.Birthday);
+            Assert.AreEqual(0, idNotifiedCount);
+            Assert.AreEqual(0, firstNameNotifiedCount);
+            Assert.AreEqual(0, lastNameNotifiedCount);
+            Assert.AreEqual(0, fullNameNotifiedCount);
+            Assert.AreEqual(0, birthdayNotifiedCount);
 
             target.Id = 123;
-            target.Name = "Jiro";
+            target.FirstName = "Jiro";
+            target.LastName = "Osaka";
             target.Birthday = now2;
 
             Assert.AreEqual(123, target.Id);
-            Assert.AreEqual("Jiro", target.Name);
+            Assert.AreEqual("Jiro", target.FirstName);
+            Assert.AreEqual("Osaka", target.LastName);
+            Assert.AreEqual("Jiro Osaka", target.FullName);
             Assert.AreEqual(now2, target.Birthday);
-
-            target.Id = 123;
-            target.Name = "Jiro";
-            target.Birthday = now2;
-
-            Assert.AreEqual(123, target.Id);
-            Assert.AreEqual("Jiro", target.Name);
-            Assert.AreEqual(now2, target.Birthday);
-
             Assert.AreEqual(1, idNotifiedCount);
-            Assert.AreEqual(1, nameNotifiedCount);
+            Assert.AreEqual(1, firstNameNotifiedCount);
+            Assert.AreEqual(1, lastNameNotifiedCount);
+            Assert.AreEqual(2, fullNameNotifiedCount);
             Assert.AreEqual(1, birthdayNotifiedCount);
         }
 
@@ -75,16 +88,33 @@ namespace UnitTest.ComponentModel
             }
         }
 
-        string name;
-        public string Name
+        string firstName;
+        public string FirstName
         {
-            get { return name; }
+            get { return firstName; }
             set
             {
-                if (name == value) return;
-                name = value;
+                if (firstName == value) return;
+                firstName = value;
                 NotifyPropertyChanged();
             }
+        }
+
+        string lastName;
+        public string LastName
+        {
+            get { return lastName; }
+            set
+            {
+                if (lastName == value) return;
+                lastName = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string FullName
+        {
+            get { return FirstName + " " + LastName; }
         }
 
         DateTime birthday;
@@ -97,6 +127,12 @@ namespace UnitTest.ComponentModel
                 birthday = value;
                 NotifyPropertyChanged();
             }
+        }
+
+        public Person()
+        {
+            AddPropertyChangedHandler("FirstName", () => NotifyPropertyChanged("FullName"));
+            AddPropertyChangedHandler("LastName", () => NotifyPropertyChanged("FullName"));
         }
     }
 }
