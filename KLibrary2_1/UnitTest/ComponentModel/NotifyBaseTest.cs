@@ -109,11 +109,5 @@ namespace UnitTest.ComponentModel
             get { return GetValue<DateTime>(); }
             set { SetValue(value); }
         }
-
-        public Person()
-        {
-            AddPropertyChangedHandler("FirstName", () => NotifyPropertyChanged("FullName"));
-            AddPropertyChangedHandler("LastName", () => NotifyPropertyChanged("FullName"));
-        }
     }
 }

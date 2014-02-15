@@ -18,6 +18,8 @@ namespace KLibrary.ComponentModel
         /// <value>The dictionary which contains the property values of this object.</value>
         protected Dictionary<string, object> PropertyValues { get; private set; }
 
+        protected Dictionary<string, string[]> PropertiesBindingMap;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NotifyBase"/> class.
         /// </summary>
@@ -27,6 +29,8 @@ namespace KLibrary.ComponentModel
                 .GetProperties()
                 .Where(p => p.CanWrite)
                 .ToDictionary(p => p.Name, TypeHelper.GetDefaultValue);
+
+            PropertiesBindingMap = DependentOnAttribute.GetSourceToTargetMap(GetType());
         }
 
         /// <summary>
@@ -70,6 +74,14 @@ namespace KLibrary.ComponentModel
         public void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+            if (PropertiesBindingMap.ContainsKey(propertyName))
+            {
+                foreach (var target in PropertiesBindingMap[propertyName])
+                {
+                    NotifyPropertyChanged(target);
+                }
+            }
         }
 
         /// <summary>
