@@ -83,12 +83,14 @@ namespace UnitTest.ComponentModel
             set { SetValue(value); }
         }
 
+        [DefaultValue("")]
         public string FirstName
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
 
+        [DefaultValue("")]
         public string LastName
         {
             get { return GetValue<string>(); }

@@ -22,7 +22,19 @@ namespace KLibrary
             if (property == null) throw new ArgumentNullException("property");
 
             var attribute = property.GetCustomAttribute<DefaultValueAttribute>(true);
-            return attribute != null ? attribute.Value : property.PropertyType.GetDefaultValue();
+            if (attribute != null)
+            {
+                if (attribute.Value == null && property.PropertyType.IsValueType ||
+                    attribute.Value != null && !property.PropertyType.IsInstanceOfType(attribute.Value))
+                {
+                    throw new InvalidCastException(string.Format("The value specified on the DefaultValueAttribute can not be set to the {0} property.", property.Name));
+                }
+                return attribute.Value;
+            }
+            else
+            {
+                return property.PropertyType.GetDefaultValue();
+            }
         }
     }
 }
