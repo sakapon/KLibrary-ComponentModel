@@ -18,7 +18,11 @@ namespace KLibrary.ComponentModel
         /// <value>The dictionary which contains the property values of this object.</value>
         protected Dictionary<string, object> PropertyValues { get; private set; }
 
-        protected Dictionary<string, string[]> PropertiesBindingMap;
+        /// <summary>
+        /// Gets the map of properties dependency from parents to children.
+        /// </summary>
+        /// <value>The map of properties dependency from parents to children.</value>
+        protected Dictionary<string, string[]> PropertiesBindingMap { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NotifyBase"/> class.
