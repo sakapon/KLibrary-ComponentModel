@@ -97,6 +97,8 @@ namespace UnitTest.ComponentModel
             set { SetValue(value); }
         }
 
+        [DependentOn("FirstName")]
+        [DependentOn("LastName")]
         public string FullName
         {
             get { return string.Format("{0} {1}", FirstName, LastName).Trim(); }

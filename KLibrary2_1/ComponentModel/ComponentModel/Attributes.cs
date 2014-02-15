@@ -17,22 +17,22 @@ namespace KLibrary.ComponentModel
             PropertyName = propertyName;
         }
 
-        public static Dictionary<string, string[]> GetTargetToSourceMap(object obj)
+        public static Dictionary<string, string[]> GetTargetToSourceMap(Type type)
         {
-            if (obj == null) throw new ArgumentNullException("obj");
+            if (type == null) throw new ArgumentNullException("type");
 
-            return obj.GetType()
+            return type
                 .GetProperties()
                 .SelectMany(p => p.GetCustomAttributes<DependentOnAttribute>(true), (p, d) => new { Target = p.Name, Source = d.PropertyName })
                 .GroupBy(x => x.Target, x => x.Source)
                 .ToDictionary(g => g.Key, g => g.ToArray());
         }
 
-        public static Dictionary<string, string[]> GetSourceToTargetMap(object obj)
+        public static Dictionary<string, string[]> GetSourceToTargetMap(Type type)
         {
-            if (obj == null) throw new ArgumentNullException("obj");
+            if (type == null) throw new ArgumentNullException("type");
 
-            return obj.GetType()
+            return type
                 .GetProperties()
                 .SelectMany(p => p.GetCustomAttributes<DependentOnAttribute>(true), (p, d) => new { Target = p.Name, Source = d.PropertyName })
                 .GroupBy(x => x.Source, x => x.Target)
