@@ -26,7 +26,7 @@ namespace KLibrary.ComponentModel
             PropertyValues = GetType()
                 .GetRuntimeProperties()
                 .Where(p => p.CanWrite)
-                .ToDictionary(p => p.Name, p => p.PropertyType.GetDefaultValue());
+                .ToDictionary(p => p.Name, TypeHelper.GetDefaultValue);
         }
 
         /// <summary>

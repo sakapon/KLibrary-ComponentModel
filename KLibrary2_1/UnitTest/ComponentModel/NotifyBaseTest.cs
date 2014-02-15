@@ -1,6 +1,7 @@
 ﻿using KLibrary.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.ComponentModel;
 
 namespace UnitTest.ComponentModel
 {
@@ -21,7 +22,6 @@ namespace UnitTest.ComponentModel
 
             var target = new Person
             {
-                Id = 1,
                 FirstName = "Ichiro",
                 LastName = "Tokyo",
                 Birthday = now1,
@@ -32,12 +32,12 @@ namespace UnitTest.ComponentModel
             target.AddPropertyChangedHandler("FullName", () => { fullNameNotifiedCount++; });
             target.AddPropertyChangedHandler("Birthday", () => { birthdayNotifiedCount++; });
 
-            target.Id = 1;
+            target.Id = -1;
             target.FirstName = "Ichiro";
             target.LastName = "Tokyo";
             target.Birthday = now1;
 
-            Assert.AreEqual(1, target.Id);
+            Assert.AreEqual(-1, target.Id);
             Assert.AreEqual("Ichiro", target.FirstName);
             Assert.AreEqual("Tokyo", target.LastName);
             Assert.AreEqual("Ichiro Tokyo", target.FullName);
@@ -76,6 +76,7 @@ namespace UnitTest.ComponentModel
 
     public class Person : NotifyBase
     {
+        [DefaultValue(-1)]
         public int Id
         {
             get { return GetValue<int>(); }
