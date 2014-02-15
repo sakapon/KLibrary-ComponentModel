@@ -24,7 +24,7 @@ namespace KLibrary.ComponentModel
         protected NotifyBase()
         {
             PropertyValues = GetType()
-                .GetRuntimeProperties()
+                .GetProperties()
                 .Where(p => p.CanWrite)
                 .ToDictionary(p => p.Name, TypeHelper.GetDefaultValue);
         }

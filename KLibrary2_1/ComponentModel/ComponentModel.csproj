@@ -51,6 +51,7 @@
     <Compile Include="..\Properties\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ComponentModel\Attributes.cs" />
     <Compile Include="ComponentModel\DisposableBase.cs" />
     <Compile Include="ComponentModel\NotifyBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
