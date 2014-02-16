@@ -1,3 +1,3 @@
 ## KLibrary.ComponentModel
 
-A library for component model.
+The library for component model.

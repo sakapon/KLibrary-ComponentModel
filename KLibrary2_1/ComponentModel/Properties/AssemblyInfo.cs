@@ -7,10 +7,10 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("KLibrary.ComponentModel")]
-[assembly: AssemblyDescription("A library for component model.")]
+[assembly: AssemblyDescription("The library for component model.")]
 [assembly: AssemblyMetadata("ProjectUrl", "https://github.com/sakapon/KLibrary-ComponentModel")]
-[assembly: AssemblyMetadata("LicenseUrl", "https://github.com/sakapon/KLibrary-ComponentModel")]
-[assembly: AssemblyMetadata("Tags", "Component")]
+[assembly: AssemblyMetadata("LicenseUrl", "https://github.com/sakapon/KLibrary-ComponentModel/blob/master/LICENSE")]
+[assembly: AssemblyMetadata("Tags", "Component Model Observer")]
 [assembly: AssemblyMetadata("ReleaseNotes", "")]
 
 // ComVisible を false に設定すると、その型はこのアセンブリ内で COM コンポーネントから 
