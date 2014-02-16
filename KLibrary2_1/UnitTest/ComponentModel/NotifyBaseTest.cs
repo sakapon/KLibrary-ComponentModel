@@ -67,7 +67,7 @@ namespace UnitTest.ComponentModel
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void AddPropertyChangedHandler_ArgumentNull()
+        public void AddPropertyChangedHandler_Null()
         {
             var target = new Person();
             target.AddPropertyChangedHandler("", null);

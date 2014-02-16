@@ -14,8 +14,15 @@ namespace UnitTest.ComponentModel
 
             Assert.AreEqual(1, map.Count);
             Assert.AreEqual(2, map["FullName"].Length);
-            Assert.AreEqual("FirstName", map["FullName"][0]);
-            Assert.AreEqual("LastName", map["FullName"][1]);
+            // MEMO: Reverse order in actual.
+            CollectionAssert.AreEquivalent(new[] { "FirstName", "LastName" }, map["FullName"]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetTargetToSourceMap_Null()
+        {
+            DependentOnAttribute.GetTargetToSourceMap(null);
         }
 
         [TestMethod]
@@ -28,6 +35,13 @@ namespace UnitTest.ComponentModel
             Assert.AreEqual(1, map["LastName"].Length);
             Assert.AreEqual("FullName", map["FirstName"][0]);
             Assert.AreEqual("FullName", map["LastName"][0]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetSourceToTargetMap_Null()
+        {
+            DependentOnAttribute.GetSourceToTargetMap(null);
         }
     }
 }
