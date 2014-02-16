@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace KLibrary.ComponentModel
@@ -11,6 +12,60 @@ namespace KLibrary.ComponentModel
     /// </summary>
     public abstract class NotifyBase : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets the dictionary which contains the property values of this object.
+        /// </summary>
+        /// <value>The dictionary which contains the property values of this object.</value>
+        protected Dictionary<string, object> PropertyValues { get; private set; }
+
+        /// <summary>
+        /// Gets the map of properties dependency from parents to children.
+        /// </summary>
+        /// <value>The map of properties dependency from parents to children.</value>
+        protected Dictionary<string, string[]> PropertiesBindingMap { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NotifyBase"/> class.
+        /// </summary>
+        protected NotifyBase()
+        {
+            PropertyValues = GetType()
+                .GetProperties()
+                .Where(p => p.CanWrite)
+                .ToDictionary(p => p.Name, TypeHelper.GetDefaultValue);
+
+            PropertiesBindingMap = DependentOnAttribute.GetSourceToTargetMap(GetType());
+        }
+
+        /// <summary>
+        /// Gets the value of the property.
+        /// </summary>
+        /// <typeparam name="T">The type of the property.</typeparam>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <returns>The value of the property.</returns>
+        protected T GetValue<T>([CallerMemberName]string propertyName = "")
+        {
+            if (!PropertyValues.ContainsKey(propertyName)) throw new ArgumentException("A value of the specified property does not exist.", "propertyName");
+
+            return (T)PropertyValues[propertyName];
+        }
+
+        /// <summary>
+        /// Sets the value of the property.
+        /// The <see cref="PropertyChanged"/> event occurs if the value has changed.
+        /// </summary>
+        /// <typeparam name="T">The type of the property.</typeparam>
+        /// <param name="value">The value of the property.</param>
+        /// <param name="propertyName">The name of the property.</param>
+        protected void SetValue<T>(T value, [CallerMemberName]string propertyName = "")
+        {
+            var currentValue = GetValue<T>(propertyName);
+
+            if (object.Equals(currentValue, value)) return;
+            PropertyValues[propertyName] = value;
+            NotifyPropertyChanged(propertyName);
+        }
+
         /// <summary>
         /// Occurs when a property value has changed.
         /// </summary>
@@ -23,6 +78,14 @@ namespace KLibrary.ComponentModel
         public void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+            if (PropertiesBindingMap.ContainsKey(propertyName))
+            {
+                foreach (var target in PropertiesBindingMap[propertyName])
+                {
+                    NotifyPropertyChanged(target);
+                }
+            }
         }
 
         /// <summary>
