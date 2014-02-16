@@ -60,6 +60,7 @@
   <ItemGroup>
     <None Include="KLibrary.snk" />
     <None Include="packages.config" />
+    <None Include="pkg\content\Person.cs.pp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NuGetPackup.exe" />
