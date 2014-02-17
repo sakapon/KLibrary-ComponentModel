@@ -5,7 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         x:Class="BmiWpf.MainWindow"
-        Title="Body Mass Index" Height="350" Width="525" FontSize="24">
+        Title="Body Mass Index" Height="360" Width="540" FontSize="24">
 	<Window.Resources>
 		<local:ScaleConverter x:Key="ScaleConverter"/>
 		<Style x:Key="CaptionLabelStyle" TargetType="{x:Type Label}">
@@ -32,7 +32,7 @@
 	<Window.DataContext>
 		<local:Body/>
 	</Window.DataContext>
-    <Grid>
+    <Grid Margin="0,0,16,20">
 		<i:Interaction.Triggers>
 			<ei:DataTrigger Binding="{Binding Bmi, Mode=OneWay}" Comparison="LessThan" Value="25">
 				<ei:GoToStateAction StateName="Normal"/>
