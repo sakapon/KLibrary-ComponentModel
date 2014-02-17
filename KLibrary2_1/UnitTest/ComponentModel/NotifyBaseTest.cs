@@ -79,21 +79,21 @@ namespace UnitTest.ComponentModel
         [DefaultValue(-1)]
         public int Id
         {
-            get { return GetValue<int>(); }
+            get { return (int)GetValue(); }
             set { SetValue(value); }
         }
 
         [DefaultValue("")]
         public string FirstName
         {
-            get { return GetValue<string>(); }
+            get { return (string)GetValue(); }
             set { SetValue(value); }
         }
 
         [DefaultValue("")]
         public string LastName
         {
-            get { return GetValue<string>(); }
+            get { return (string)GetValue(); }
             set { SetValue(value); }
         }
 
@@ -106,7 +106,7 @@ namespace UnitTest.ComponentModel
 
         public DateTime Birthday
         {
-            get { return GetValue<DateTime>(); }
+            get { return (DateTime)GetValue(); }
             set { SetValue(value); }
         }
     }
