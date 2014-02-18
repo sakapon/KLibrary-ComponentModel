@@ -10,23 +10,33 @@ namespace BmiWpf
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var scale = GetScale(parameter);
-            return
-                (value is double) ? scale * (double)value :
-                (value is int) ? scale * (int)value :
-                DependencyProperty.UnsetValue;
+            var valueD = ToValue(value);
+            var scale = ToScale(parameter);
+
+            return valueD.HasValue ? valueD * scale : DependencyProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var scale = GetScale(parameter);
-            return
-                (value is double) ? (double)value / scale :
-                (value is int) ? (int)value / scale :
-                DependencyProperty.UnsetValue;
+            var valueD = ToValue(value);
+            var scale = ToScale(parameter);
+
+            return valueD.HasValue && scale != 0.0 ? valueD / scale : DependencyProperty.UnsetValue;
         }
 
-        static readonly Func<object, double> GetScale = o =>
+        static double? ToValue(object o)
+        {
+            try
+            {
+                return System.Convert.ToDouble(o);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        static double ToScale(object o)
         {
             try
             {
@@ -36,6 +46,6 @@ namespace BmiWpf
             {
                 return 1.0;
             }
-        };
+        }
     }
 }
