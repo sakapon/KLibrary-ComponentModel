@@ -76,38 +76,38 @@ namespace UnitTest.ComponentModel
 
     public class Person : NotifyBase
     {
-        int id;
+        int _Id;
         public int Id
         {
-            get { return id; }
+            get { return _Id; }
             set
             {
-                if (id == value) return;
-                id = value;
+                if (_Id == value) return;
+                _Id = value;
                 NotifyPropertyChanged();
             }
         }
 
-        string firstName;
+        string _FirstName;
         public string FirstName
         {
-            get { return firstName; }
+            get { return _FirstName; }
             set
             {
-                if (firstName == value) return;
-                firstName = value;
+                if (_FirstName == value) return;
+                _FirstName = value;
                 NotifyPropertyChanged();
             }
         }
 
-        string lastName;
+        string _LastName;
         public string LastName
         {
-            get { return lastName; }
+            get { return _LastName; }
             set
             {
-                if (lastName == value) return;
-                lastName = value;
+                if (_LastName == value) return;
+                _LastName = value;
                 NotifyPropertyChanged();
             }
         }
@@ -117,14 +117,14 @@ namespace UnitTest.ComponentModel
             get { return string.Format("{0} {1}", FirstName, LastName).Trim(); }
         }
 
-        DateTime birthday;
+        DateTime _Birthday;
         public DateTime Birthday
         {
-            get { return birthday; }
+            get { return _Birthday; }
             set
             {
-                if (birthday == value) return;
-                birthday = value;
+                if (_Birthday == value) return;
+                _Birthday = value;
                 NotifyPropertyChanged();
             }
         }
