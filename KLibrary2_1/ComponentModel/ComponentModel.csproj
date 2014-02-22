@@ -54,6 +54,7 @@
     <Compile Include="ComponentModel\Attributes.cs" />
     <Compile Include="ComponentModel\DisposableBase.cs" />
     <Compile Include="ComponentModel\DynamicEntity.cs" />
+    <Compile Include="ComponentModel\DynamicValidEntity.cs" />
     <Compile Include="ComponentModel\NotifyBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeHelper.cs" />
