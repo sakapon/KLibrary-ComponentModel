@@ -1,13 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 
 namespace KLibrary.ComponentModel
 {
-    public class DynamicValidEntity : DynamicEntity, INotifyDataErrorInfo
+    public class DynamicValidEntity : DynamicObject, INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        /// <summary>
+        /// Occurs when a property value has changed.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = (o, e) => { };
+
+        /// <summary>
+        /// Notifies that the property value has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property which has changed.</param>
+        public void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Add the action which is executed when the property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property which has changed.</param>
+        /// <param name="action">The action which is executed when the property has changed.</param>
+        public void AddPropertyChangedHandler(string propertyName, Action action)
+        {
+            if (action == null) throw new ArgumentNullException("action");
+
+            PropertyChanged += (o, e) =>
+            {
+                if (e.PropertyName == propertyName)
+                {
+                    action();
+                }
+            };
+        }
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = (o, e) => { };
+
+        public void NotifyErrorsChanged(string propertyName)
+        {
+            ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public void AddErrorsChangedHandler(string propertyName, Action action)
+        {
+            if (action == null) throw new ArgumentNullException("action");
+
+            ErrorsChanged += (o, e) =>
+            {
+                if (e.PropertyName == propertyName)
+                {
+                    action();
+                }
+            };
+        }
 
         public System.Collections.IEnumerable GetErrors(string propertyName)
         {

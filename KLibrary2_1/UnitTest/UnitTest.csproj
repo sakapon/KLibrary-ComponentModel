@@ -61,6 +61,7 @@
     <Compile Include="ComponentModel\NotifyBaseTest.cs" />
     <Compile Include="ComponentModel\AttributesTest.cs" />
     <Compile Include="ComponentModel\DynamicEntityTest.cs" />
+    <Compile Include="ComponentModel\DynamicValidEntityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeHelperTest.cs" />
   </ItemGroup>
