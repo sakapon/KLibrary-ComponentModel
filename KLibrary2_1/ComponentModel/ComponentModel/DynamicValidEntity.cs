@@ -32,7 +32,7 @@ namespace KLibrary.ComponentModel
             if (name == null) throw new ArgumentNullException("name");
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The value is empty.", "name");
             if (Properties.ContainsKey(name)) throw new ArgumentException("The property is already defined.", "name");
-            if (validate == null) throw new ArgumentNullException("validate");
+            if (validate == null) validate = o => true;
             if (!validate(initialValue)) throw new ArgumentException("The initial value is not valid.", "initialValue");
 
             Properties[name] = new Property
@@ -92,6 +92,8 @@ namespace KLibrary.ComponentModel
             var property = Properties[propertyName];
             if (property.GetValue != null) return false;
             if (object.Equals(property.Value, value)) return true;
+            // TODO: Error.
+            if (!property.Validate(value)) return false;
 
             property.Value = value;
             Properties[propertyName] = property;
