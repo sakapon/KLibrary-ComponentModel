@@ -8,6 +8,21 @@ namespace KLibrary.ComponentModel
 {
     public class DynamicValidEntity : DynamicObject, INotifyPropertyChanged, INotifyDataErrorInfo
     {
+        public void DefineProperty(string name, Func<object, bool> validate, object initialValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DefineGetProperty(string name, Func<dynamic, object> getValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DefinePropertiesDependency(string sourceProperty, string targetProperty)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Occurs when a property value has changed.
         /// </summary>
