@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 
@@ -17,12 +18,14 @@ namespace KLibrary.ComponentModel
         /// <value>The dictionary which contains the properties of this object.</value>
         protected Dictionary<string, Property> Properties { get; private set; }
 
+        [DebuggerDisplay(@"\{{Name}\}")]
         protected struct Property
         {
             public string Name;
             public object Value;
             public Func<dynamic, object> GetValue;
-            public HashSet<string> InfluencedProperties;
+            public HashSet<Property> InfluencingProperties;
+            public HashSet<Property> InfluencedProperties;
 
             public bool IsReadOnly
             {
@@ -76,15 +79,26 @@ namespace KLibrary.ComponentModel
             if (!Properties.ContainsKey(sourceProperty)) throw new ArgumentException("The property is not defined.", "sourceProperty");
             if (!Properties.ContainsKey(targetProperty)) throw new ArgumentException("The property is not defined.", "targetProperty");
 
-            var property = Properties[sourceProperty];
-            if (property.InfluencedProperties == null)
-            {
-                property.InfluencedProperties = new HashSet<string>();
-            }
-            if (property.InfluencedProperties.Contains(targetProperty)) return;
+            var source = Properties[sourceProperty];
+            var target = Properties[targetProperty];
 
-            property.InfluencedProperties.Add(targetProperty);
-            Properties[sourceProperty] = property;
+            if (source.InfluencedProperties == null)
+            {
+                source.InfluencedProperties = new HashSet<Property>();
+            }
+            if (source.InfluencedProperties.Contains(target)) return;
+
+            if (target.InfluencingProperties == null)
+            {
+                target.InfluencingProperties = new HashSet<Property>();
+            }
+            if (target.InfluencingProperties.Contains(source)) return;
+
+            source.InfluencedProperties.Add(target);
+            target.InfluencingProperties.Add(source);
+
+            Properties[sourceProperty] = source;
+            Properties[targetProperty] = target;
         }
 
         protected bool GetValue(string propertyName, out object result)
@@ -164,7 +178,7 @@ namespace KLibrary.ComponentModel
             {
                 foreach (var target in Properties[propertyName].InfluencedProperties)
                 {
-                    NotifyPropertyChanged(target);
+                    NotifyPropertyChanged(target.Name);
                 }
             }
         }
