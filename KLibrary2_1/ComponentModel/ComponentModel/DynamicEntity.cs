@@ -12,36 +12,103 @@ namespace KLibrary.ComponentModel
     public class DynamicEntity : DynamicObject, INotifyPropertyChanged
     {
         /// <summary>
-        /// Gets the dictionary which contains the property values of this object.
+        /// Gets the dictionary which contains the properties of this object.
         /// </summary>
-        /// <value>The dictionary which contains the property values of this object.</value>
-        protected Dictionary<string, object> PropertyValues { get; private set; }
+        /// <value>The dictionary which contains the properties of this object.</value>
+        protected Dictionary<string, Property> Properties { get; private set; }
+
+        protected struct Property
+        {
+            public string Name;
+            public object Value;
+            public Func<dynamic, object> GetValue;
+            public HashSet<string> InfluencedProperties;
+
+            public bool IsReadOnly
+            {
+                get { return GetValue != null; }
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicEntity"/> class.
         /// </summary>
         public DynamicEntity()
         {
-            PropertyValues = new Dictionary<string, object>();
+            Properties = new Dictionary<string, Property>();
+        }
+
+        public void DefineProperty(string name, object initialValue)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The value is empty.", "name");
+            if (Properties.ContainsKey(name)) throw new ArgumentException("The property is already defined.", "name");
+
+            Properties[name] = new Property
+            {
+                Name = name,
+                Value = initialValue,
+            };
+        }
+
+        public void DefineGetProperty(string name, Func<dynamic, object> getValue, params string[] sourceProperties)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The value is empty.", "name");
+            if (Properties.ContainsKey(name)) throw new ArgumentException("The property is already defined.", "name");
+            if (getValue == null) throw new ArgumentNullException("getValue");
+            if (sourceProperties == null) sourceProperties = new string[0];
+
+            Properties[name] = new Property
+            {
+                Name = name,
+                GetValue = getValue,
+            };
+
+            foreach (var source in sourceProperties)
+            {
+                DefinePropertiesDependency(source, name);
+            }
+        }
+
+        public void DefinePropertiesDependency(string sourceProperty, string targetProperty)
+        {
+            if (!Properties.ContainsKey(sourceProperty)) throw new ArgumentException("The property is not defined.", "sourceProperty");
+            if (!Properties.ContainsKey(targetProperty)) throw new ArgumentException("The property is not defined.", "targetProperty");
+
+            var property = Properties[sourceProperty];
+            if (property.InfluencedProperties == null)
+            {
+                property.InfluencedProperties = new HashSet<string>();
+            }
+            if (property.InfluencedProperties.Contains(targetProperty)) return;
+
+            property.InfluencedProperties.Add(targetProperty);
+            Properties[sourceProperty] = property;
         }
 
         protected bool GetValue(string propertyName, out object result)
         {
-            if (!PropertyValues.ContainsKey(propertyName))
+            if (!Properties.ContainsKey(propertyName))
             {
                 result = null;
                 return false;
             }
 
-            result = PropertyValues[propertyName];
+            var property = Properties[propertyName];
+            result = property.IsReadOnly ? property.GetValue(this) : property.Value;
             return true;
         }
 
         protected bool SetValue(string propertyName, object value)
         {
-            if (PropertyValues.ContainsKey(propertyName) && object.Equals(PropertyValues[propertyName], value)) return true;
+            if (!Properties.ContainsKey(propertyName)) return false;
+            var property = Properties[propertyName];
+            if (property.IsReadOnly) return false;
+            if (object.Equals(property.Value, value)) return true;
 
-            PropertyValues[propertyName] = value;
+            property.Value = value;
+            Properties[propertyName] = property;
             NotifyPropertyChanged(propertyName);
             return true;
         }
@@ -77,7 +144,7 @@ namespace KLibrary.ComponentModel
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return PropertyValues.Keys;
+            return Properties.Keys;
         }
 
         /// <summary>
@@ -92,6 +159,14 @@ namespace KLibrary.ComponentModel
         public void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+            if (Properties.ContainsKey(propertyName) && Properties[propertyName].InfluencedProperties != null)
+            {
+                foreach (var target in Properties[propertyName].InfluencedProperties)
+                {
+                    NotifyPropertyChanged(target);
+                }
+            }
         }
 
         /// <summary>
